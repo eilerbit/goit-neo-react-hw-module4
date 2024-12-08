@@ -1,0 +1,49 @@
+.header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #0056b3;
+}
+
+.form {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;   
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.iconButton {
+    position: absolute;
+    right: 5px;    
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #007bff;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.iconButton:hover {
+    color: #0056b3;
+}
