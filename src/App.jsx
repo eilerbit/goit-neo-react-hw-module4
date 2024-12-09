@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar/SearchBar';
 import ImageGallery from './components/ImageGallery/ImageGallery';
 import Loader from './components/Loader/Loader';
@@ -16,36 +16,42 @@ const App = () => {
     const [page, setPage] = useState(1);
     const [selectedImage, setSelectedImage] = useState(null);
 
-    const handleSearch = async (searchQuery) => {
+
+    useEffect(() => {
+        if (!query) return;
+
+        const fetchImages = async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const response = await axios.get('https://api.unsplash.com/search/photos', {
+                    params: { query, page, per_page: 15 },
+                    headers: { Authorization: 'Client-ID qxEHf9KRE1bO0opHCyyoymihK_NiUIH4qpRnQ3T7dP0' },
+                });
+                setImages((prevImages) => page === 1
+                    ? response.data.results 
+                    : [...prevImages, ...response.data.results]); 
+            } catch (err) {
+                console.error(err);
+                setError(`Failed to fetch images. Please try again.`);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchImages();
+    }, [query, page]);
+
+    const handleSearch = (searchQuery) => {
         setQuery(searchQuery);
-        setPage(1);
         setImages([]);
-        await fetchImages(searchQuery, 1);
     };
 
-    const fetchImages = async (searchQuery, pageNum) => {
-        setLoading(true);
-        setError(null);
-
-        try {
-            const response = await axios.get('https://api.unsplash.com/search/photos', {
-                params: { query: searchQuery, page: pageNum, per_page: 15 },
-                headers: { Authorization: 'Client-ID qxEHf9KRE1bO0opHCyyoymihK_NiUIH4qpRnQ3T7dP0' },
-            });
-            setImages((prevImages) => [...prevImages, ...response.data.results]);
-        } catch (err) {
-          console.error(err);
-            setError('Failed to fetch images. Error {err.} Please try again.');
-        } finally {
-            setLoading(false);
-        }
+    const handleLoadMore = () => {
+        setPage((prevPage) => prevPage + 1);
     };
 
-    const handleLoadMore = async () => {
-        const nextPage = page + 1;
-        setPage(nextPage);
-        await fetchImages(query, nextPage);
-    };
 
     const handleImageClick = (image) => setSelectedImage(image);
 
